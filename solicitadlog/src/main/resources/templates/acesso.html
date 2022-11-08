@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<div align="center">
+<img src="https://files.cercomp.ufg.br/weby/up/1/o/Marca_UFG_cor_completa_horizontal.png"
+     alt="logoUFGDlog.jpg"
+     width="300"
+     height="200">
+<h1>DLOG</h1>
+<h3>DIRETORIA DE LOGISTICA</h3>
+<h5>Formulario de solicitação de veiculos</h5>
+</div>
+
+<title>Formulário de solicitação de reserva de veículos</title>
+</head>
+<body>
+
+  <fieldset>
+   <form action="acesso" class="col s10">
+    <div class="row">
+      	 <div class="input-field col s3">
+		  <label for="cpf" class="active">Digite o CPF</label> 
+		  <input name="cpf"  id="cpf"  class="validate" type="number">
+		 </div>
+      	 <div class="input-field col s4">
+		  <label for="user" class="active">Nome do usuario</label> <br><br>
+		  <label name="user" id="user" class="active"th:text="${nome}"/>
+		 </div>	
+	<div class="input-field col s2">
+	    <label for="sigla" class="active" style="color: Black">Lotacao</label>
+		<select class="browser-default"  id="sigla" name="sigla" >
+		<option th:each = "s : ${sigla}" th:value="${s}" th:text="${s}">
+		</select>
+	</div>
+	  	 <div class="input-field col s4">
+		  <label for="siglain" class="active">Sigla unidade</label> 
+		  <label name="siglain"  id="siglain" th:text="${sigla}" />
+		 </div>	
+		<div class="input-field col s2">
+	      <label for="siglaR" class="active" style="color: Black">Unidade referencia</label>
+
+		   </select>
+	    </div>	
+      	 <div class="input-field col s4">
+		  <label for="uni_e" class="active">Sigla unidade encontrada</label> 
+		  <b><label name="uni_e" id="uni_e" class="active" th:each="s:${siglaref}" th:text="${s.nm_orgao}"/></b>
+		 </div>			 	 	 
+		 <div><input class="waves-effect waves-light btn" type="submit" value="Verificar"></div>
+    </div>
+   
+   </form>
+  
+  </fieldset>
+  <form action="" class="col s12">
+   <fieldset>
+    <legend>Cadastro de solicitação</legend>
+      <div class="input-field col s4">
+	    <label for="especie" class="active" style="color: Black">Escolha de tipo de veículo</label>
+		<select class="browser-default"  id="especie" name="especie" >
+		<option th:each = "e : ${especie}" th:value="${e.cd_especie}" th:text="${e.especie}">
+		</select>
+	  </div> 
+      	 <div class="input-field col s3">
+		  <label for="ini" class="active">Data início</label> 
+		  <input name="ini"  id="ini"  class="validate" type="date">
+		 </div>	
+      	 <div class="input-field col s3">
+		  <label for="fim" class="active">Data final</label> 
+		  <input name="fim"  id="fim"  class="validate" type="date">
+		 </div>		
+      	 <div class="input-field col s4">
+		  <label for="destino" class="active">Destino</label> 
+		  <input name="destino"  id="destino"  class="validate" type="text">
+		 </div>		
+      	 <div class="input-field col s4">
+		  <label for="motivo" class="active">Motivo da solicitação</label> 
+		  <input name="motivo"  id="motivo"  class="validate" type="text">
+		 </div>	
+      <div class="input-field col s3">
+	    <label for="requisicao" class="active" style="color: Black">Viagem ou Urbana?</label>
+		<select class="browser-default"  id="requisicao" name="requisicao" >
+		<option th:each = "r : ${requisicao}" th:value="${r.cod_req}" th:text="${r.requisicao}">
+		</select>
+	  </div>
+      	 <div class="input-field col s4">
+		  <label for="observacao" class="active">Observações</label> 
+		  <input name="observacao"  id="observacao"  class="validate" type="text">
+		 </div>		
+      	 <div class="input-field col s4">
+		  <label for="contato" class="active">Contato</label> 
+		  <input name="contato"  id="contato"  class="validate" type="tel">
+		 </div>			   		 		 	 	   
+   </fieldset>
+  </form>
+
+      
+
+      
+            <div th:each = "m : ${msg}" style="font-size: 18px; color: SaddleBrown;">
+       <span th:text="${m}"></span>
+      </div>
+</body>
+</html>
