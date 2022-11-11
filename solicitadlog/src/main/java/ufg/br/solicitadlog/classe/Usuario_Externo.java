@@ -25,7 +25,7 @@ public class Usuario_Externo  implements Serializable{
 	private Integer ano_ingresso;
 	private String unidade_vinculo;
 	private String sigla_unidade;
-	private Integer id_unidade;
+	private Long id_unidade;
 	private String cidade_vinculo;
 	private String senha;
 	
@@ -85,10 +85,11 @@ public class Usuario_Externo  implements Serializable{
 		this.unidade_vinculo = unidade_vinculo;
 	}
 
-	public Integer getId_unidade() {
+
+	public Long getId_unidade() {
 		return id_unidade;
 	}
-	public void setId_unidade(Integer id_unidade) {
+	public void setId_unidade(Long id_unidade) {
 		this.id_unidade = id_unidade;
 	}
 	public String getCidade_vinculo() {

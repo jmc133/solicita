@@ -32,5 +32,8 @@ public interface OrgaoRepository extends JpaRepository<Orgao, Long> {
 	
 	@Query(value = "select * from orgao where sg_orgao =?1", nativeQuery = true)
 	List<Orgao> pesquisaOrgaoPorSigla(String sigla);
+	
+	@Query(value = "select cd_orgao from orgao where sg_orgao=?1", nativeQuery = true)
+	Long[] buscaCodigoPorSg_orgao(String sg);
 
 }
