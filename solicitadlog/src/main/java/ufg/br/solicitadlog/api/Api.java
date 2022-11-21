@@ -231,7 +231,7 @@ public class Api {
 		  ModelAndView mv = new ModelAndView("acesso.html");
 		  Long id = solicitacaoRepository.verMaximoId();
 		  
-		  System.out.println("Testando o post: "+nome+" cof "+CPF);
+		  System.out.println("Testando o post: "+nome+" cpf "+CPF);
 		  if (id==null) {
 			  id=(long) 1;
 		  }else {
@@ -255,12 +255,17 @@ public class Api {
 									  sol.setId(id);
 									  sol.setNome_unidade(unidade);
 									  sol.setRequisicao(requisicao);
+									  if (nome.equals(null)) {
+										  sol.setSolicitante(ue.getNome());
+									  }else {
 									  sol.setSolicitante(nome);
+									  }
 								      sol.setContato(contato);
 									  sol.setData_solicitacao(new Date());
-									  for(Long c:cd_orgao) {
+									/*  for(Long c:cd_orgao) {
 									  sol.setUnidade(c);
-									  }
+									  }*/
+									  sol.setUnidade(ue.getId_unidade());
 									  solicitacaoRepository.save(sol);
 									  mv.addObject("msg", "Solicitação realizada com sucesso com ID= "+id);
 									  mv.addObject("lista",solicitacaoFantRepository.solicitacoesPorCpf(CPF));
@@ -310,6 +315,8 @@ public class Api {
 				           mv.addObject("sigla", null);
 				           mv.addObject("lista",solicitacaoFantRepository.solicitacoesPorCpf(CPF));
 				           mv.addObject("msg","Preencha a solicitação e clique em Salvar");
+				           mv.addObject("especie",especieRepository.findAll());
+				           mv.addObject("requisicao",requisicaoRepository.findAll());
 				            mv.addObject("verificador", "");
 				            mv.addObject("visivel",0);
 					  }else {mv.addObject("msg", "As senhas não conferem, digite novamente");
@@ -323,10 +330,14 @@ public class Api {
 		  }else { 
 			  if(ue.getSenha().equals(digitesenha)) {
 		             mv.addObject("nome", ue.getNome());
+		             System.out.println("Nome "+ue.getNome()+" cpf "+ue.getCpf()+" cd= "+ue.getId_unidade());
+		         //    cd_orgao=ue.getId_unidade();
 		             mv.addObject("cpf", ue.getCpf());
 		             mv.addObject("msg","Preencha a solicitação e clique em Salvar");
 		             listaorgao =  (ArrayList<Orgao>) orgaoRepository.pesquisaOrgaoPorSigla(ue.getSigla_unidade());
 		             mv.addObject("siglaref", listaorgao);
+		             mv.addObject("especie",especieRepository.findAll());
+		             mv.addObject("requisicao",requisicaoRepository.findAll());
 		             mv.addObject("sigla", ue.getSigla_unidade());
 		             mv.addObject("verificador", "");
 		             mv.addObject("visivel",0);	
