@@ -40,11 +40,11 @@ background: #eee;
  }
 </style>      
 
-<h3>DIRETORIA DE LOGISTICA</h3>
-<h5>Formulario de solicitação de veiculos</h5>
+<h3>Acesso a reservas</h3>
+
 </div>
 
-<title>Formulário de solicitação de reserva de veículos</title>
+<title>Acesso solicitação de reserva de veículos</title>
 </head>
 <body>
 
@@ -53,7 +53,7 @@ background: #eee;
     <div class="row">
       	 <div class="input-field col s3">
 		  <label for="cpf" class="active">Digite o CPF</label> 
-		  <input name="cpf"  id="cpf"  class="validate" type="number">
+		  <input name="cpf"  id="cpf"  class="validate" type="number" mask("9")>
 		 </div>
       	 <div class="input-field col s4">
 		  <label for="user" class="active">Nome do usuario</label> 
@@ -215,6 +215,7 @@ window.onload = function(){
 	}
 }
 </script>
+
       
     
 </body>
