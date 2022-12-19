@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999xhtml" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+<head >
+<!--      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
 
     <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+ <!--   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>-->
    <!-- Adicionando JQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-            crossorigin="anonymous"></script> 
+            crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <div align="center">
 <a> <img src="https://files.cercomp.ufg.br/weby/up/1302/o/DLOG_UFG_PRETO.svg?1613059566"
      alt="DLOG_UFG_PRETO.svg"
      width="180"
      height="70"
-     border="50%"  
+     border="0%"  
      >  
 <img src="https://files.cercomp.ufg.br/weby/up/1/o/Marca_UFG_cor_completa_horizontal.png"
      alt="logoUFGDlog.jpg"
      width="180"
      height="110"
-     border="50%"></a>
+     border="0%"></a>
    
      
 <style type="text/css">
@@ -30,14 +30,20 @@ table{
 width: 96%;
 }
 label{ color: Black; }
-table{ font-size: 10px; margin-left: 2%; margin-right: 2%}
-div{font-size: 9px; margin-left: 5%}
+table{ font-size: 18px; margin-left: 2%; margin-right: 2%}
+div{ margin-left: 5%}
 table td, table th{
 border: 1px solid grey;
 }
 table th{
 background: #eee;
  }
+ body {
+	bgcolor: "#ADD8E6";
+}
+form { font-size: 20px;
+
+}
 </style>      
 
 <h3>Acesso a reservas</h3>
@@ -46,70 +52,125 @@ background: #eee;
 
 <title>Acesso solicitação de reserva de veículos</title>
 </head>
-<body>
-            <div th:each = "m : ${msg}" style="font-size: 18px; color: Red;">
-              <b> <span th:text="${m}"></span></b>
-            </div>
-  <fieldset>
+<body bgcolor="ADD8E6">
+     <div th:if = "${cormsg!=null}" th:each = "m : ${msg}" style="font-size: 18px; color: Red;">
+             <b> <span th:text="${m}"></span></b>
+     </div>
+     <div th:if = "${cormsg==null}" th:each = "m : ${msg}" style="font-size: 18px; color: Blue;">
+        <b> <span th:text="${m}"></span></b>
+     </div>
+  <fieldset th:if = "${cormsg!=null}">
+   <legend>Insira o CPF</legend>
    <form action="acesso" class="col s10">
     <div class="row">
       	 <div class="input-field col s3" >
 		  <label for="cpf" class="active">Digite o CPF</label> 
 		  <input name="cpf"  id="cpf"  class="validate" type="number" autofocus="autofocus">
 		 </div>
-      	 <div class="input-field col s4">
-		  <label for="user" class="active">Nome do usuario</label> 
-		 <b> <label name="user" id="user" class="active"th:text="${nome}"/></b>
-		 </div>	
-
-	  	 <div class="input-field col s4">
-		  <label for="siglain" class="active">Sigla unidade</label> 
-		  <b><label name="siglain"  id="siglain" th:text="${sigla}" /></b>
-		 </div>	
-
-      	 <div class="input-field col s4">
-		  <label for="uni_e" class="active">Nome da unidade</label> 
-		  <b><label name="uni_e" id="uni_e" class="active" th:each="s:${siglaref}" th:text="${s.nm_orgao}"/></b>
-		 </div>			 	 	 
+		 	 	 
 		 <div >
-		  <b> <input class="waves-effect waves-light btn" type="submit" value="Verificar"></b>
+		  <b> <input class="waves-effect waves-light btn" type="submit" style="background:DarkBlue;color: PaleGreen; " value="Verificar"></b>
 		 </div>
     </div>
    
-   </form>  
+   </form>    
   </fieldset>
-
-   <form action="verificainseresenha" method="post"  class="col s10">
+  <br> 
+  <form action="existencia" class="col s10">
+     <fieldset>
+      <legend>Escolha de vinculo</legend>
+       <div class="row">
+        <input th:if="${vunidade!=null}" type="radio" id="lotacao" name="lotacao" value="1" checked="checked"/>
+        <label for="lotacao" th:text="${vunidade}" id="lotacaolabel"/>       
+       </div>
+       <div class="row"> 
+        <input th:if="${vunidade1!=null}" type="radio" id="lotacao" name="lotacao"  value="2"/>
+        <label for="lotacao" th:text="${vunidade1}" id="lotacaolabel"/>        
+       </div>
+       <div class="row"> 
+        <input th:if="${vunidade2!=null}" type="radio" id="lotacao" name="lotacao"  value="3"/>
+        <label for="lotacao" th:text="${vunidade2}" id="lotacaolabel"/>        
+       </div>
+       	<div >
+		  <b> <input th:if = "${vunidade!=null||vunidade1!=null||vunidade2!=null}" class="waves-effect waves-light btn" type="submit" style="background:DarkBlue;color: PaleGreen; " value="Escolher vínculo"></b>
+		</div>
+        <div align="right" >
+		  <a class="waves-effect waves-light btn" type="button" th:href="@{/inicio}" style="color: Red;">Reiniciar</a>
+		</div>		
+     </fieldset>
+     
+  </form>
+     <div th:if = "${cormsg!=null}" th:each = "m : ${msg}" style="font-size: 18px; color: Red;">
+             <b> <span th:text="${m}"></span></b>
+     </div>
+     <div th:if = "${cormsg==null}" th:each = "m : ${msg}" style="font-size: 18px; color: Blue;">
+        <b> <span th:text="${m}"></span></b>
+     </div>
+   <form action="verificasenha" method="post"  class="col s10" th:if="${existe==1}">
     <fieldset>
-       <legend>Cadastro ou inserção de senha de acesso</legend>
-        <div class="row">
-         <div class="input-field col s3" >
-		  <label for="digitesenha" class="active">Digite a senha</label> 
-		  <input name="digitesenha"  id="digitesenha"  class="validate" type="text" autofocus="autofocus">
-		  <input name="inseresenha"  id="inseresenha"  class="validate" type="text" readonly="readonly">
-		  <input name="repitasenha"  id="repitasenha"  class="validate" type="text" readonly="readonly">
-		 </div>	
-         <div class="input-field col s3" >
-          <div>
-		  <label for="inseresenha" class="active">Insira a senha</label> 
-		  <input name="inseresenha"  id="inseresenha"  class="validate" type="text" autofocus="autofocus">
-		  </div>
-		  <div>
-		  <label for="repitasenha" class="active">Repita a senha</label> 
-		  <input name="repitasenha"  id="repitasenha"  class="validate" type="text">	
-		  </div>
-		  <input name="digitesenha"  id="digitesenha"  class="validate" type="text" readonly="readonly">	  
-		 </div>	
-		 <div class="input-field col s3">
-		 <b><input class="waves-effect waves-light btn" type="submit" value="Entrar"/></b>
-		 </div>			 		 
+       <legend>Inserção de senha de acesso</legend>
+        <div class="row">	
+		  <div>	    
+		    <input name="digitesenha"  id="digitesenha"  class="validate" type="text" autofocus="autofocus">
+		    <label for="digitesenha" class="active">Digite a senha</label>	  
+	      </div>	
+		  <div >
+		   <b><input class="waves-effect waves-light btn" style="background:DarkBlue;color: PaleGreen; " type="submit" value="Entrar"/></b>
+		  </div>	
+        <div align="right" >
+		  <a class="waves-effect waves-light btn" type="button" th:href="@{/abrirrecuperarsenha}" style="color: Red;">Recuperar senha</a>
+		</div>			  		 		 
         </div>
     </fieldset>
    </form>
-           <div th:each = "m : ${msg}" style="font-size: 18px; color: Red;">
-             <b> <span th:text="${m}"></span></b>
-           </div>
-  
+   <fieldset th:if="${existe==0}">
+    <legend>Inserir/salvar senha</legend>
+     <form action="inserirusuario" method="post">
+       <div class="row">
+           <div>		  
+		    <input name="inseresenha"  id="inseresenha"  class="validate" type="text" autofocus="autofocus">
+		    <label for="inseresenha" class="active">Insira a senha</label> 
+		  </div>
+		  <div>		   
+		    <input name="repitasenha"  id="repitasenha"  class="validate" type="text">
+		    <label for="repitasenha" class="active">Repita a senha</label>	
+		  </div>
+		  <div>		   
+		    <input name="email"  id="email"  class="validate" type="text">
+		    <label for="email" class="active">Insira o email</label>	
+		  </div>		
+           <div>		   
+		    <input name="dtnascimento"  id="dtnascimento"  class="validate" type="date">
+		    <label for="dtnascimento" class="active">Data de Nascimento</label>	
+		  </div>		    
+		  <div >
+		   <b><input class="waves-effect waves-light btn" type="submit" style="background:DarkBlue;color: PaleGreen; " value="Inserir"/></b>
+		  </div>   
+		  Alguns dados aqui poderam ser usados para recuperar senha    
+       </div>
+     </form>
+   
+   </fieldset>
+     <form action="recuperarsenha" th:if="${ars!=null}" method="get">
+      <fieldset>
+       <legend>Recuperar senha</legend>
+       <div class="row">
+          <div>		   
+		    <input name="emailr"  id="emailr"  class="validate" type="text">
+		    <label for="emailr" class="active">Insira o email</label>	
+		  </div>		
+           <div>		   
+		    <input name="dtnascimentor"  id="dtnascimentor"  class="validate" type="date">
+		    <label for="dtnascimentor" class="active">Data de Nascimento</label>	
+		  </div>
+		  <div >
+		   <b><input class="waves-effect waves-light btn" type="submit" style="background:DarkBlue;color: PaleGreen; " value="Enviar"/></b>
+		  </div> 		  
+       
+       </div>
+       
+      </fieldset>
+     </form>
 
 
       

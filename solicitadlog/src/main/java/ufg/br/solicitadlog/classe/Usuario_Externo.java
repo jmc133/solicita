@@ -1,11 +1,16 @@
 package ufg.br.solicitadlog.classe;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "usuario_externo")
@@ -28,8 +33,25 @@ public class Usuario_Externo  implements Serializable{
 	private Long id_unidade;
 	private String cidade_vinculo;
 	private String senha;
+	private String email;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date nascimento;
 	
 	
+	
+	public Date getNascimento() {
+		return nascimento;
+	}
+	public void setNascimento(Date nascimento) {
+		this.nascimento = nascimento;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	public String getSigla_unidade() {
 		return sigla_unidade;
 	}

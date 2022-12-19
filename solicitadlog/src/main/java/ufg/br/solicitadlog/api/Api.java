@@ -3,6 +3,7 @@ package ufg.br.solicitadlog.api;
 
 
 import java.lang.reflect.Array;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,11 +15,13 @@ import org.json.JSONArray;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
 
 import br.com.caelum.stella.ValidationMessage;
 import br.com.caelum.stella.validation.CPFValidator;
@@ -37,12 +40,20 @@ import ufg.br.solicitadlog.repository.*;
 @Controller
 public class Api {
 	//linha abaixo com variaveis para receber os dados da api
-	  String nome; String cpf1;List<String> vinculo = null;List<String> categoria = null;List<Integer> matricula = null;String situacao;Integer ano_ingersso;
+	  String nome; String cpf1;List<String> vinculo0 = null;List<String> categoria0 = null;List<Integer> matricula0 = null;String situacao;Integer ano_ingersso;
 	  List<String> unidade_vinculo = null;List<Integer> id_unidade = null;List<String> sigla_unidade = null;String cidade; List<String> sigla_Referencia = null;
 	  String access; String scope;String token_type;Integer expire;
-	  String unidade;
+	  String unidade; String unidade1; String unidade2;
 	  String CPF;
 	  String mensagem;
+	  int cont=0;
+	  String matricula; String matricula1;String matricula2;
+	  String categoria;String categoria1; String categoria2;
+	  String vinculo;String vinculo1;String vinculo2;
+	  String siglaUnidade; String siglaUnidade1; String siglaUnidade2;
+	  String situacao1; String situacao2;
+	  String nr_lotacao;
+	  Long cd;Long cd1; Long cd2;
 	  Orgao orgao = new Orgao();
 	  Usuario_Externo ue = new Usuario_Externo();
 	  Long[] cd_orgao;
@@ -62,6 +73,8 @@ public class Api {
 	private SolicitacaoRepository solicitacaoRepository;
 	@Autowired
 	private SolicitacaoFantRepository solicitacaoFantRepository;
+
+
 	
 	@GetMapping("**/inicio")
 	 public ModelAndView inicio() {
@@ -69,12 +82,13 @@ public class Api {
 	     mv.addObject("nome", "");
 	     mv.addObject("cpf","");
 	     mv.addObject("msg","");
-	     mv.addObject("siglaref", listaorgao);
+	   /*  mv.addObject("siglaref", listaorgao);
 	     mv.addObject("sigla", "");
 	     mv.addObject("especie",especieRepository.findAll());
 	     mv.addObject("requisicao",requisicaoRepository.findAll());
 	     mv.addObject("lista", new SolicitacaoFant());
-	     mv.addObject("vcpf",1);
+	     mv.addObject("vcpf",1);*/
+	     mv.addObject("cormsg",1);
 		 return mv;
 	 }
 	
@@ -88,9 +102,10 @@ public class Api {
      	 if (erro.size()>0) {
      		mensagem="CPF invalido";
      		mv.addObject("msg", mensagem);
+     		mv.addObject("cormsg",1);
      	 }else {
      		    ue=usuarioExternoRepository.verExistenciaLocalDeUsuarioExterno(cpf);
-     		    if (Objects.isNull(ue)) {
+     		    
      		    	mensagem="Usuario com primeiro acesso ou inexistente";
      		    	mv.addObject("msg", mensagem);
      		    	HttpResponse<String> response = Unirest.post("https://data.api.ufg.br/token")
@@ -110,45 +125,291 @@ public class Api {
        	   			           .asString();
        	   			     tudo = new org.json.JSONObject(responseuser.getBody().toString());      
        	   			     json = (JSONObject) ps.parse(responseuser.getBody().toString());
+     		             }catch (Exception e) {
+		        	       mensagem="Nada foi encontrado para este cpf"+e;
+		        	       mv.addObject("msg", mensagem);
+		        	       mv.addObject("cormsg",1);
+					
+				        }
+       	   			     
+       	   			     System.out.println(json);
        	   			     JSONArray array = tudo.getJSONArray("vinculos");
        	   	             nome=(String) json.get("nome");
                          CPF=(String) json.get("cpf");
+                         mv.addObject("nome",nome);
+                         mv.addObject("cpf",CPF);
                          if (array.length()>0) {
+                        	 System.out.println("No if -- "+json);
+                        	 System.out.println("ver array: "+array.length());
+                        	 int cont=1;
                         	 for(int i=0;i<array.length();i++) {
                         		 org.json.JSONObject f =array.getJSONObject(i);
-                        		 matricula.add(f.getInt("matricula"));
-                        		 categoria.add(f.getString("categoria"));
-                        		 ano_ingersso=(f.getInt("ano_ingresso"));
-                        		 cidade=f.getString("cidade_unidade_vinculo");
-                        		 situacao=f.getString("situacao");
-                        		 vinculo.add(f.getString("vinculo"));
-                        		 sigla_unidade.add(f.getString("sigla_unidade_vinculo"));
-                        		 listaorgao =  (ArrayList<Orgao>) orgaoRepository.pesquisaOrgaoPorSigla(f.getString("sigla_unidade_vinculo"));
-                        		 cd_orgao=orgaoRepository.buscaCodigoPorSg_orgao(f.getString("sigla_unidade_vinculo"));
-                        		 unidade=(f.getString("unidade_vinculo"));
-                        	     mensagem="Usuario novo encontrado "+json.get("nome")+" com vinculos: "+f.getString("unidade_vinculo");	 
-                        	     mv.addObject("msg", mensagem);
+                        		  if (cont==1) {
+                        		  System.out.println("ver array no for: "+array.length()+" -- "+i);
+                        		  
+                        		  matricula=f.getString("matricula");
+                        		  categoria=f.getString("categoria");
+                        		  ano_ingersso=(f.getInt("ano_ingresso"));
+                        		  cidade=f.getString("cidade_unidade_vinculo");
+                        		  situacao=f.getString("situacao");
+                        		  vinculo=f.getString("vinculo");
+                        		  siglaUnidade=f.getString("sigla_unidade_vinculo");
+                        		  listaorgao =  (ArrayList<Orgao>) orgaoRepository.pesquisaOrgaoPorSigla(f.getString("sigla_unidade_vinculo"));
+                        		  cd_orgao=orgaoRepository.buscaCodigoPorSg_orgao(f.getString("sigla_unidade_vinculo"));
+                        		  unidade=(f.getString("unidade_vinculo"));
+                                  for(Long c:cd_orgao) {
+           		            	    cd=(c);           		            	    
+           		                  }
+                                  cont=cont+1;
+                        	      mensagem="Usuario "+json.get("nome");	 
+                        	      mv.addObject("msg", mensagem);
+                        	      mv.addObject("vunidade",unidade);
+                        	      System.out.println(matricula+" * "+categoria+" * "+ano_ingersso+" * "+cidade+
+                         	    		 " * "+situacao+" * "+vinculo+" * "+siglaUnidade+" * "+cd+" * "+
+                         	    		 unidade+" *** " + cont);
+                        		  }else if (cont==2){
+                        			  matricula1=f.getString("matricula");
+                            		  categoria1=f.getString("categoria");
+                            		  ano_ingersso=(f.getInt("ano_ingresso"));
+                            		  cidade=f.getString("cidade_unidade_vinculo");
+                            		  situacao1=f.getString("situacao");
+                            		  vinculo1=f.getString("vinculo");
+                            		  siglaUnidade1=f.getString("sigla_unidade_vinculo");
+                            		  listaorgao =  (ArrayList<Orgao>) orgaoRepository.pesquisaOrgaoPorSigla(f.getString("sigla_unidade_vinculo"));
+                            		  cd_orgao=orgaoRepository.buscaCodigoPorSg_orgao(f.getString("sigla_unidade_vinculo"));
+                            		  unidade1=(f.getString("unidade_vinculo"));
+                                      for(Long c:cd_orgao) {
+               		            	    cd1=(c);           		            	    
+               		                  }
+                                      mensagem="Usuario: "+json.get("nome");	 
+                            	      mv.addObject("msg", mensagem);
+                                      mv.addObject("vunidade1",unidade1);
+                        			  cont=cont+1;
+                            	      System.out.println(matricula1+" * "+categoria1+" * "+ano_ingersso+" * "+cidade+
+                             	    		 " * "+situacao1+" * "+vinculo1+" * "+siglaUnidade1+" * "+cd1+" * "+
+                             	    		 unidade1+" *** " + cont);
+                        		  }else if (cont==3) {
+                        			  matricula2=f.getString("matricula");
+                            		  categoria2=f.getString("categoria");
+                            		  ano_ingersso=(f.getInt("ano_ingresso"));
+                            		  cidade=f.getString("cidade_unidade_vinculo");
+                            		  situacao2=f.getString("situacao");
+                            		  vinculo2=f.getString("vinculo");
+                            		  siglaUnidade2=f.getString("sigla_unidade_vinculo");
+                            		  listaorgao =  (ArrayList<Orgao>) orgaoRepository.pesquisaOrgaoPorSigla(f.getString("sigla_unidade_vinculo"));
+                            		  cd_orgao=orgaoRepository.buscaCodigoPorSg_orgao(f.getString("sigla_unidade_vinculo"));
+                            		  unidade2=(f.getString("unidade_vinculo"));
+                                      for(Long c:cd_orgao) {
+               		            	    cd2=(c);           		            	    
+               		                  }
+                                      mensagem="Usuario: "+json.get("nome");	 
+                            	      mv.addObject("msg", mensagem);
+                                      mv.addObject("vunidade2",unidade2);
+                        			  cont=cont+1;
+                            	      System.out.println(matricula2+" * "+categoria2+" * "+ano_ingersso+" * "+cidade+
+                             	    		 " * "+situacao2+" * "+vinculo2+" * "+siglaUnidade2+" * "+cd2+" * "+
+                             	    		 unidade2+" *** " + cont);
+                        		  }
+
                         	 }
                          }else {
                         	 mensagem="Nenhum usuario encontrado com este cpf";
                         	 mv.addObject("msg", mensagem); 
+                        	 mv.addObject("cormsg",1);
                          }
        	   			     
-     		          }catch (Exception e) {
-     		        	       mensagem="Nada foi encontrado para este cpf";
-     		        	       mv.addObject("msg", mensagem);
-						
-					}
+
      		         Unirest.shutDown();
      		    	
-     		    }else {
-     		    	   mensagem="Usuario com alguma frequencia";
-     		    	   mv.addObject("msg", mensagem);
-     		    }
+     		 
      	 }
      	 
      	 
          return mv;  
+	  }
+	  @GetMapping("**/existencia")
+	  public ModelAndView VerExistencia(@RequestParam("lotacao")String lotacao) {
+		  ModelAndView mv = new ModelAndView("acesso.html");
+		  if (situacao!=null) {situacao.trim();}
+		  if (situacao1!=null) {situacao1.trim();}
+		  if (situacao2!=null) {situacao2.trim();}
+		  nr_lotacao=lotacao;
+		  System.out.println("o que esta chegando: "+lotacao);
+		   ue=(Usuario_Externo) usuarioExternoRepository.verExistenciaLocalDeUsuarioExterno(CPF);
+		    if (Objects.isNull(ue)) {
+		    	//Aqui comeca a veriicacao externa
+		    	if (lotacao.equals("1")) {
+		    		if(situacao.equals("Ativo          ")) {
+		    			mv.addObject("existe",0);
+		    		}else {
+		    			mensagem="Usuário não habilitado(a) para solicitação devido a situação: "+situacao;
+		    			mv.addObject("cormsg",1);
+		    			mv.addObject("nome", "");
+		    		    mv.addObject("cpf","");
+		    		    mv.addObject("existe",2);
+		    		}
+		    	}else if (lotacao.equals("2")) {
+		    		if (situacao1.equals("Ativo          ")) {
+		    			mv.addObject("existe",0);
+		    		}else {
+		    			mensagem="Usuário não habilitado(a) para solicitação devido a situação: "+situacao1;
+		    			mv.addObject("cormsg",1);
+		    			mv.addObject("nome", "");
+		    		    mv.addObject("cpf","");
+		    		    mv.addObject("existe",2);
+		    		}
+		    	}else if(lotacao.equals("3")) {
+		    		if(situacao2.equals("Ativo          ")) {
+		    			mv.addObject("existe",0);
+		    		}else {
+		    			mensagem="Usuário não habilitado(a) para solicitação devido a situação: "+situacao2;
+		    			mv.addObject("cormsg",1);
+		    			mv.addObject("nome", "");
+		    		    mv.addObject("cpf","");
+		    		    mv.addObject("existe",2);
+		    		}
+		    	}else {
+		    		mensagem="Usuário não habilitado(a) para solicitação";
+		    		mv.addObject("cormsg",1);
+		    		mv.addObject("nome", "");
+		   	        mv.addObject("cpf","");
+		   	        mv.addObject("existe",2);
+		    	}
+		    	mv.addObject("existe",0);
+		    	//Aqui comeca a verificacao interna
+		    }else if (lotacao.equals("1")) {
+		    	 if (situacao.equals("Ativo          ")) {
+		    		 mv.addObject("existe",1);
+		    		 
+		    	 }else {
+		    			mensagem="Usuário não habilitado(a) para solicitação devido a situação: "+situacao;
+		    			mv.addObject("cormsg",1);
+		    			mv.addObject("nome", "");
+		    		    mv.addObject("cpf","");
+		    		    mv.addObject("existe",2);
+		    	 }
+		    	
+		    	
+		    }else if (lotacao.equals("2")) {
+		    	if(situacao1.equals("Ativo          ")) {
+		    		mv.addObject("existe",1);
+		    	}else {
+	    			mensagem="Usuário não habilitado(a) para solicitação devido a situação: "+situacao1;
+	    			mv.addObject("cormsg",1);
+	    			mv.addObject("nome", "");
+	    		    mv.addObject("cpf","");
+	    		    mv.addObject("existe",2);
+		    	}
+		    	
+		    }else if (lotacao.equals("3")) {
+		    	if(situacao2.equals("Ativo          ")) {
+		    		mv.addObject("existe",1);
+		    	}else {
+	    			mensagem="Usuário não habilitado(a) para solicitação devido a situação: "+situacao2;
+	    			mv.addObject("cormsg",1);
+	    			mv.addObject("nome", "");
+	    		    mv.addObject("cpf","");
+	    		    mv.addObject("existe",2);
+		    	}
+		    	
+		    }else {
+		    	mensagem="Não pode ser definida uma posição de usuário";
+    			mv.addObject("cormsg",1);
+    			mv.addObject("nome", "");
+    		    mv.addObject("cpf","");
+    		    mv.addObject("existe",2);
+		    }
+		  mv.addObject("msg",mensagem);
+		  return mv;
+	  }
+	  
+	  @PostMapping("**/inserirusuario")
+	  public ModelAndView InserirUsuario(@RequestParam("inseresenha")String inseresenha, @RequestParam("repitasenha")String repitasenha,
+			  @RequestParam("email")String email, @RequestParam("dtnascimento")String dtnascimento) throws java.text.ParseException {
+		ModelAndView mv1 = new ModelAndView();
+		Usuario_Externo u = new Usuario_Externo();
+		System.out.println("*** nome dentro de inserir usuario "+nome);
+		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+		if (!dtnascimento.isEmpty()&&!dtnascimento.equals("")) {
+		  if(inseresenha.equals(repitasenha)) {
+			  u.setNome(nome);
+			  u.setCpf(CPF);
+			  u.setEmail(email);
+			  u.setNascimento(sd.parse(dtnascimento));
+			  
+              if (nr_lotacao.equals("1")) {
+            	  u.setCategoria(categoria);
+            	  u.setAno_ingresso(ano_ingersso);
+            	  u.setCidade_vinculo(cidade);
+            	  u.setId_unidade(cd);
+            	  u.setMatricula(matricula);
+            	  u.setSenha(repitasenha);
+            	  u.setSigla_unidade(siglaUnidade);
+            	  u.setSituacao(situacao);
+            	  u.setUnidade_vinculo(unidade);
+            	  u.setVinculo(vinculo);
+            	  usuarioExternoRepository.save(u);
+            	  ModelAndView mv = new ModelAndView("solicitacao.html");
+            	  mv.addObject("nome", nome);
+            	  mv.addObject("cpf",CPF);
+            	  mv.addObject("especie",especieRepository.findAll());
+		          mv.addObject("requisicao",requisicaoRepository.findAll());
+		          mv.addObject("unidade",unidade);
+            	  return mv;
+              }else if (nr_lotacao.equals("2")) {
+            	  u.setCategoria(categoria1);
+            	  u.setAno_ingresso(ano_ingersso);
+            	  u.setCidade_vinculo(cidade);
+            	  u.setId_unidade(cd1);
+            	  u.setMatricula(matricula1);
+            	  u.setSenha(repitasenha);
+            	  u.setSigla_unidade(siglaUnidade1);
+            	  u.setSituacao(situacao1);
+            	  u.setUnidade_vinculo(unidade1);
+            	  u.setVinculo(vinculo1);
+            	  usuarioExternoRepository.save(u);
+            	  ModelAndView mv = new ModelAndView("solicitacao.html");
+            	  mv.addObject("nome", nome);
+            	  mv.addObject("cpf",CPF);
+            	  mv.addObject("especie",especieRepository.findAll());
+		          mv.addObject("requisicao",requisicaoRepository.findAll());
+		          mv.addObject("unidade",unidade1);
+            	  return mv;
+              }else if (nr_lotacao.equals("3")) {
+            	  u.setCategoria(categoria2);
+            	  u.setAno_ingresso(ano_ingersso);
+            	  u.setCidade_vinculo(cidade);
+            	  u.setId_unidade(cd2);
+            	  u.setMatricula(matricula2);
+            	  u.setSenha(repitasenha);
+            	  u.setSigla_unidade(siglaUnidade2);
+            	  u.setSituacao(situacao2);
+            	  u.setUnidade_vinculo(unidade2);
+            	  u.setVinculo(vinculo2);
+            	  usuarioExternoRepository.save(u); 
+            	  ModelAndView mv = new ModelAndView("solicitacao.html");
+            	  mv.addObject("nome", nome);
+            	  mv.addObject("cpf",CPF);
+            	  mv.addObject("especie",especieRepository.findAll());
+		          mv.addObject("requisicao",requisicaoRepository.findAll());
+		          mv.addObject("unidade",unidade2);
+            	  return mv;
+              }
+		  }else {
+			  mensagem="Senhas diferentes, por favor digite senhas iguais nos dois campos";
+			  ModelAndView mv = new ModelAndView("acesso.html");
+			  mv.addObject("existe",0);
+			  mv.addObject("msg",mensagem);
+			  return mv;
+		  }
+		}else {
+			mensagem="Data de nascimento vazia, ela e necessária";
+			  ModelAndView mv = new ModelAndView("acesso.html");
+			  mv.addObject("existe",0);
+			  mv.addObject("msg",mensagem);
+			  return mv;
+		}
+		  return mv1;
 	  }
 	  @PostMapping("**/salvarsolicitacao")
 	  public ModelAndView Salvar(@RequestParam("especie")Integer especie,@RequestParam("ini")String ini,@RequestParam("fim")String fim,
@@ -266,92 +527,150 @@ public class Api {
 		  
 		  
 	  }
-	  @PostMapping("**/verificainseresenha")
-	  public ModelAndView VerificaInsereSenha(@RequestParam("digitesenha")String digitesenha,@RequestParam("inseresenha")String inseresenha,
-			  @RequestParam("repitasenha") String repitasenha) throws java.text.ParseException {
+
+      @GetMapping("/recuperarsenha")
+	  public ModelAndView RecuperarSenha(@RequestParam("dtnascimentor")String dtnascimentor, @RequestParam("emailr")String emailr) {
+             ModelAndView mv = new ModelAndView("acesso.html");
+             if(!dtnascimentor.isEmpty()||!dtnascimentor.equals("")) {
+            	 if(!emailr.isEmpty()||!emailr.equals("")) {
+            		 ue=usuarioExternoRepository.verExistenciaLocalDeUsuarioExterno(CPF);
+            		 DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            		 String nascimento = df.format(ue.getNascimento());
+            		 if(emailr.equals(ue.getEmail())&&dtnascimentor.equals(nascimento)) {
+            			 mv.addObject("msg","Sua senha é:  "+ue.getSenha()); 
+            		 }else {
+            			 mv.addObject("msg","Dados inseridos não conferem");
+            		 }
+            	 }else {
+            		 mv.addObject("msg","Dados de email estão vazios");
+            	 }
+             }else {
+            	 mv.addObject("msg","Data de nascimento esta vazio");
+             }
+             
+             mv.addObject("ars",null);
+			 return mv;
+			}
+      @GetMapping("/abrirrecuperarsenha")
+	  public ModelAndView AbrirRecuperarSenha() {
+             ModelAndView mv = new ModelAndView("acesso.html");
+             mv.addObject("ars",1);
+			 return mv;
+			}
+	  @PostMapping("**/verificasenha")
+	  public ModelAndView VerificaSenha(@RequestParam("digitesenha")String digitesenha) throws java.text.ParseException {
+		ModelAndView mv1 = new ModelAndView();
 		  
 		  System.out.println("senha: "+ digitesenha);
-		  if(digitesenha.equals("")&&digitesenha.equals(null)) {
-			  System.out.println("senha de dentro: "+ digitesenha);
-			  if(!inseresenha.equals("")||!inseresenha.equals(null)) {
-				  
-				  if(!repitasenha.equals("")||!repitasenha.equals(null)) {
-					  System.out.println("insere= "+inseresenha+" repita= "+repitasenha);
-					  if(inseresenha==repitasenha) {
-						  ModelAndView mv = new ModelAndView("solicitacao.html");
-						  user.setSenha(inseresenha); 
-						  usuarioExternoRepository.save(user);
-				           mv.addObject("nome", nome);
-				           mv.addObject("cpf",CPF);
-				           mv.addObject("siglaref", listaorgao);
-				           mv.addObject("sigla", null);
-				           mv.addObject("lista",solicitacaoFantRepository.solicitacoesPorCpf(CPF));
-				           mv.addObject("msg","Preencha a solicitação e clique em Salvar");
-				           mv.addObject("especie",especieRepository.findAll());
-				           mv.addObject("requisicao",requisicaoRepository.findAll());
-				            mv.addObject("verificador", "");
-				            mv.addObject("visivel",0);
-				            return mv;
-					  }else { ModelAndView mv = new ModelAndView("acesso.html");
-						     mv.addObject("msg", "As senhas não conferem, digite novamente");
-		                     mv.addObject("verificador","externo");
-		                     mv.addObject("visivel",1);
-		                     
-		                     return mv;
-					  }
-					   
-				  }else {ModelAndView mv = new ModelAndView("acesso.html");
-					  mv.addObject("msg", "Deve ser preenchido o campo de repetição da senha, que deve ser igual ao da inserção ");
-	                     mv.addObject("verificador","externo");
-	                     mv.addObject("visivel",1);
-					  return mv;
-				  }
-			  }else { ModelAndView mv = new ModelAndView("acesso.html");
-				      mv.addObject("msg", "O campo de inserção de senha está vazio");
-	                     mv.addObject("verificador","externo");
-	                     mv.addObject("visivel",1);
-				      return mv;}
-		  }else { 
-			  if(ue.getSenha().equals(digitesenha)) {
-				  ModelAndView mv = new ModelAndView("solicitacao.html");
-		             mv.addObject("nome", ue.getNome());
-		             System.out.println("Nome "+ue.getNome()+" cpf "+ue.getCpf()+" cd= "+ue.getId_unidade()+" get senha "+ue.getSenha()+" digite a senha "+digitesenha);
-		             mv.addObject("cpf", ue.getCpf());
-		             mv.addObject("msg","Preencha a solicitação e clique em Salvar");
-		             listaorgao =  (ArrayList<Orgao>) orgaoRepository.pesquisaOrgaoPorSigla(ue.getSigla_unidade());
-		             mv.addObject("siglaref", listaorgao);
-		             mv.addObject("especie",especieRepository.findAll());
-		             mv.addObject("requisicao",requisicaoRepository.findAll());
-		             mv.addObject("sigla", ue.getSigla_unidade());
-		             mv.addObject("verificador", "");
-		             mv.addObject("visivel",0);	
-		             mv.addObject("lista",solicitacaoFantRepository.solicitacoesPorCpf(CPF));
-		             return mv;
-		             
-			  }else { ModelAndView mv = new ModelAndView("acesso.html");
-			  System.out.println("Onde a senha nao confere--Nome "+ue.getNome()+" cpf "+ue.getCpf()+" cd= "+ue.getId_unidade()+" get senha  "+ue.getSenha()+"  digite a senha "+digitesenha);
-				      mv.addObject("msg","Senha não confere, começe novamente");
-				      mv.addObject("nome", ue.getNome());
-				      mv.addObject("cpf", ue.getCpf());	           
-		              listaorgao=new ArrayList<>();
-		              mv.addObject("siglaref", listaorgao);
-		              mv.addObject("sigla", "");
-		              mv.addObject("especie",especieRepository.findAll());
-		              mv.addObject("requisicao",requisicaoRepository.findAll());
-		              mv.addObject("lista", new SolicitacaoFant());
-		              mv.addObject("verificador", "interno");
-		              mv.addObject("visivel",1);
-		              mv.addObject("vcpf", 1);
-		              return mv;
-			  }
+		  ue=usuarioExternoRepository.verExistenciaLocalDeUsuarioExterno(CPF);
+		  if (cont<4) {
+		  if (digitesenha.equals(ue.getSenha())) {
+			  ModelAndView mv = new ModelAndView("solicitacao.html");
+        	  mv.addObject("nome", nome);
+        	  mv.addObject("cpf",CPF);
+        	  mv.addObject("especie",especieRepository.findAll());
+	          mv.addObject("requisicao",requisicaoRepository.findAll());
+	          Usuario_Externo u = new Usuario_Externo();
+	          if (nr_lotacao.equals("1")) {
+	        	  u.setCpf(CPF);
+	        	  u.setNome(nome);
+	        	  u.setNascimento(ue.getNascimento());
+	        	  u.setEmail(ue.getEmail());
+            	  u.setCategoria(categoria);
+            	  u.setAno_ingresso(ano_ingersso);
+            	  u.setCidade_vinculo(cidade);
+            	  u.setId_unidade(cd);
+            	  u.setMatricula(matricula);
+            	  u.setSenha(digitesenha);
+            	  u.setSigla_unidade(siglaUnidade);
+            	  u.setSituacao(situacao);
+            	  u.setUnidade_vinculo(unidade);
+            	  u.setVinculo(vinculo);
+            	  usuarioExternoRepository.save(u);
+            	//  ModelAndView mv = new ModelAndView("solicitacao.html");
+            	  mv.addObject("nome", nome);
+            	  mv.addObject("cpf",CPF);
+            	  mv.addObject("especie",especieRepository.findAll());
+		          mv.addObject("requisicao",requisicaoRepository.findAll());
+		          mv.addObject("unidade",unidade);
+            	  return mv;
+              }else if (nr_lotacao.equals("2")) {
+            	  u.setCpf(CPF);
+            	  u.setNome(nome);
+            	  u.setNascimento(ue.getNascimento());
+	        	  u.setEmail(ue.getEmail());
+            	  u.setCategoria(categoria1);
+            	  u.setAno_ingresso(ano_ingersso);
+            	  u.setCidade_vinculo(cidade);
+            	  u.setId_unidade(cd1);
+            	  u.setMatricula(matricula1);
+            	  u.setSenha(digitesenha);
+            	  u.setSigla_unidade(siglaUnidade1);
+            	  u.setSituacao(situacao1);
+            	  u.setUnidade_vinculo(unidade1);
+            	  u.setVinculo(vinculo1);
+            	  usuarioExternoRepository.save(u);
+            	//  ModelAndView mv = new ModelAndView("solicitacao.html");
+            	  mv.addObject("nome", nome);
+            	  mv.addObject("cpf",CPF);
+            	  mv.addObject("especie",especieRepository.findAll());
+		          mv.addObject("requisicao",requisicaoRepository.findAll());
+		          mv.addObject("unidade",unidade1);
+            	  return mv;
+              }else if (nr_lotacao.equals("3")) {
+            	  u.setCpf(CPF);
+            	  u.setNome(nome);
+            	  u.setNascimento(ue.getNascimento());
+	        	  u.setEmail(ue.getEmail());
+            	  u.setCategoria(categoria2);
+            	  u.setAno_ingresso(ano_ingersso);
+            	  u.setCidade_vinculo(cidade);
+            	  u.setId_unidade(cd2);
+            	  u.setMatricula(matricula2);
+            	  u.setSenha(digitesenha);
+            	  u.setSigla_unidade(siglaUnidade2);
+            	  u.setSituacao(situacao2);
+            	  u.setUnidade_vinculo(unidade2);
+            	  u.setVinculo(vinculo2);
+            	  usuarioExternoRepository.save(u); 
+            //	  ModelAndView mv = new ModelAndView("solicitacao.html");
+            	  mv.addObject("nome", nome);
+            	  mv.addObject("cpf",CPF);
+            	  mv.addObject("especie",especieRepository.findAll());
+		          mv.addObject("requisicao",requisicaoRepository.findAll());
+		          mv.addObject("unidade",unidade2);
+            	  return mv;
+              } 
+        	  return mv;
+			  
+		  }else {			  
+			  mensagem="Senha incorreta!";
+			  ModelAndView mv = new ModelAndView("acesso.html");
+        	  mv.addObject("nome", nome);
+        	  mv.addObject("cpf",CPF);
+			  mv.addObject("existe",1);
+			  mv.addObject("msg",mensagem);
+			  mv.addObject("cormsg",null);
+			  cont=cont+1;
+			  System.out.println(cont);
+			  return mv;
 			  
 		  }
-		  
-		  
+		  }else {
+			  ModelAndView mv = new ModelAndView("acesso.html");
+			     mv.addObject("nome", "");
+			     mv.addObject("cpf","");
+			     mv.addObject("msg","Reiniciando o login");
+			     mv.addObject("cormsg",1);
+			     mv.addObject("existe",3);
+			     cont=0;
+			     return mv;
+		  }  
 		  
 	  }
 
-	  
+
+
 	 
 
 }

@@ -49,10 +49,13 @@ background: #eee;
     <div  align="center">
 	  <label for="user" class="active">  Usuario     </label> 
 	</div>  
-	<div  align="center">
-	 <b><label name="user" id="user" class="active"th:text="${nome}"/></b>
-	</div>	
-
+	<div  align="center" style="color: Blue">
+	 <b><label name="user" id="user" style="color: Blue; font-size: 14px" class="active"th:text="${nome}"/></b>
+		
+	       <div th:each = "un : ${unidade}" style="font-size: 18px;">
+             <b> <span th:text="${un}"></span></b>
+           </div>
+    </div>
 </head>
 <body>
   <fieldset>
@@ -92,7 +95,8 @@ background: #eee;
   </fieldset>
            <div th:each = "m : ${msg}" style="font-size: 18px; color: Red;">
              <b> <span th:text="${m}"></span></b>
-           </div>
+           </div >
+
 
       
 <script >
@@ -161,7 +165,9 @@ window.onload = function(){
 		 <b><input class="waves-effect waves-light btn" type="submit" value="Salvar"/></b>
 		 </div>	
 		<div class="input-field col s3">
-		   <b><input class="waves-effect waves-light btn" type="button" value="Sair"/></b>
+		 <div align="right" >
+		  <a class="waves-effect waves-light btn" type="button" th:href="@{/inicio}">Sair</a>
+		</div>
 		</div>	
         		
       </div>       		 		 	 	   
