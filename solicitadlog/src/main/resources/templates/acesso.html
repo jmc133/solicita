@@ -111,7 +111,7 @@ form { font-size: 20px;
        <legend>Inserção de senha de acesso</legend>
         <div class="row">	
 		  <div>	    
-		    <input name="digitesenha"  id="digitesenha"  class="validate" type="text" autofocus="autofocus">
+		    <input name="digitesenha"  id="digitesenha"  class="validate" type="password" autofocus="autofocus">
 		    <label for="digitesenha" class="active">Digite a senha</label>	  
 	      </div>	
 		  <div >
@@ -119,7 +119,10 @@ form { font-size: 20px;
 		  </div>	
         <div align="right" >
 		  <a class="waves-effect waves-light btn" type="button" th:href="@{/abrirrecuperarsenha}" style="color: Red;">Recuperar senha</a>
-		</div>			  		 		 
+		</div>	
+        <div align="right" th:if="${existe==1}" >
+		  <a class="waves-effect waves-light btn" type="button" th:href="@{/abrialterarsenha}" style="color: Red;">Alterar senha</a>
+		</div>					  		 		 
         </div>
     </fieldset>
    </form>
@@ -136,7 +139,7 @@ form { font-size: 20px;
 		    <label for="repitasenha" class="active">Repita a senha</label>	
 		  </div>
 		  <div>		   
-		    <input name="email"  id="email"  class="validate" type="text">
+		    <input name="email"  id="email"  class="validate" type="email" style="text-transform:lowercase;" >
 		    <label for="email" class="active">Insira o email</label>	
 		  </div>		
            <div>		   
@@ -170,6 +173,26 @@ form { font-size: 20px;
        </div>
        
       </fieldset>
+     </form>
+     <form action="alterasenha" th:if="${alterasenha!=null}">
+       <fieldset>
+        <legend>Alterar senha</legend>
+         <div>	    
+		    <input name="senha"  id="senha"  class="validate" type="password" autofocus="autofocus">
+		    <label for="senha" class="active">Digite a senha</label>	  
+	     </div>
+          <div>		  
+		    <input name="alterasenha"  id="alterasenha"  class="validate" type="text" autofocus="autofocus">
+		    <label for="alterasenha" class="active">Insira a senha</label> 
+		  </div>
+		  <div>		   
+		    <input name="repitaalterasenha"  id="repitaalterasenha"  class="validate" type="text">
+		    <label for="repitaalterasenha" class="active">Repita a senha</label>	
+		  </div>	
+		  <div >
+		   <b><input class="waves-effect waves-light btn" type="submit" style="background:DarkBlue;color: PaleGreen; " value="Alterar"/></b>
+		  </div> 		       
+       </fieldset>
      </form>
 
 

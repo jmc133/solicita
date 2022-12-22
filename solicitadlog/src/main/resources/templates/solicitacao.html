@@ -27,14 +27,14 @@
    
      
 <style type="text/css">
-fildset{margin-left: 8%; margin-right: 8%;}
+fildset{margin-left: 10%; margin-right: 10%;}
 table{
 width: 96%;
 }
 label{ color: Black; }
-table{ font-size: 10px; margin-left: 1%; margin-right: 1%}
-div{font-size: 9px; margin-left: 2%}
-fieldset{margin-left: 2%; margin-right: 2%;}
+table{ font-size: 12px; margin-left: 3%; margin-right: 3%}
+div{font-size: 12px; margin-left: 3%}
+
 table td, table th{
 border: 1px solid grey;
 }
@@ -60,7 +60,8 @@ background: #eee;
 <body>
   <fieldset>
    <legend>Lista de solicitações</legend>
-           <table  class="striped">
+   <div class="row">
+       <table  class="striped">
          <thead>
          <tr>
           <th>Data envio</th>
@@ -72,32 +73,61 @@ background: #eee;
           <th>Solicitante</th>
           <th>Unidade</th>
           <th>Observação</th>
-          <th>Aceite</th>
+          <th>Aceite </th>
           <th>Id</th>
 
          </tr>         
          </thead>
        <tr th:each= "l:${lista}" >
-          <td style ="color:Blue; " th:text="${#dates.format(l.data_solicitacao, 'dd/MM/yyyy')}"></td>
-          <td style ="color:Blue; " th:text="${#dates.format(l.data_ini, 'dd/MM/yyyy')}">
-          <td style ="color:Blue;" th:text="${#dates.format(l.data_fim, 'dd/MM/yyyy')}">
-          <td style ="color:Blue;" th:text="${l.requisicao}">
-          <td style ="color:Blue;" th:text="${l.especie}">
-          <td style ="color:Blue;" th:text="${l.destino}">
-          <td style ="color:Blue;" th:text="${l.solicitante}">
-          <td style ="color:Blue;" th:text="${l.nome_unidade}">
-          <td style ="color:Blue;" th:text="${l.observacao}">
-          <td style ="color:Blue;" th:text="${l.aceite}">
-         <b> <td style ="color:Red;" th:text="${l.id}"></b>
+          <td style ="color:Blue;" th:if="${l.aceite=='S'}"  th:text="${#dates.format(l.data_solicitacao, 'dd/MM/yyyy')}">
+          <td style ="color:Black;" th:if="${l.aceite==null}"  th:text="${#dates.format(l.data_solicitacao, 'dd/MM/yyyy')}">
+          <td style ="color:Red;" th:if="${l.aceite=='N'}"  th:text="${#dates.format(l.data_solicitacao, 'dd/MM/yyyy')}">
+          <td style ="color:Blue;" th:if="${l.aceite=='S'}"  th:text="${#dates.format(l.data_ini, 'dd/MM/yyyy')}">
+          <td style ="color:Black;" th:if="${l.aceite==null}"  th:text="${#dates.format(l.data_ini, 'dd/MM/yyyy')}">
+          <td style ="color:Red;" th:if="${l.aceite=='N'}"  th:text="${#dates.format(l.data_ini, 'dd/MM/yyyy')}">
+          <td style ="color:Blue;" th:if="${l.aceite=='S'}" th:text="${#dates.format(l.data_fim, 'dd/MM/yyyy')}">
+          <td style ="color:Black;" th:if="${l.aceite==null}" th:text="${#dates.format(l.data_fim, 'dd/MM/yyyy')}">
+          <td style ="color:Red;" th:if="${l.aceite=='N'}" th:text="${#dates.format(l.data_fim, 'dd/MM/yyyy')}">
+          <td style ="color:Blue;" th:if="${l.aceite=='S'}" th:text="${l.requisicao}">
+          <td style ="color:Black;" th:if="${l.aceite==null}" th:text="${l.requisicao}">
+          <td style ="color:Red;" th:if="${l.aceite=='N'}" th:text="${l.requisicao}">
+          <td style ="color:Blue;" th:if="${l.aceite=='S'}" th:text="${l.especie}">
+          <td style ="color:Black;" th:if="${l.aceite==null}" th:text="${l.especie}">
+          <td style ="color:Red;" th:if="${l.aceite=='N'}" th:text="${l.especie}">
+          <td style ="color:Blue;" th:if="${l.aceite=='S'}" th:text="${l.destino}">
+          <td style ="color:Black;" th:if="${l.aceite==null}" th:text="${l.destino}">
+          <td style ="color:Red;" th:if="${l.aceite=='N'}" th:text="${l.destino}">
+          <td style ="color:Blue;" th:if="${l.aceite=='S'}" th:text="${l.solicitante}">
+          <td style ="color:Black;" th:if="${l.aceite==null}" th:text="${l.solicitante}">
+          <td style ="color:Red;" th:if="${l.aceite=='N'}" th:text="${l.solicitante}">
+          <td style ="color:Blue;" th:if="${l.aceite=='S'}" th:text="${l.nome_unidade}">
+          <td style ="color:Black;" th:if="${l.aceite==null}" th:text="${l.nome_unidade}">
+          <td style ="color:Red;" th:if="${l.aceite=='N'}" th:text="${l.nome_unidade}">
+          <td style ="color:Blue;" th:if="${l.aceite=='S'}" th:text="${l.observacao}">
+          <td style ="color:Black;" th:if="${l.aceite==null}" th:text="${l.observacao}">
+          <td style ="color:Red;" th:if="${l.aceite=='N'}" th:text="${l.observacao}">
+          <td> <span th:if="${l.aceite=='N'}" >Não</span> 
+          <span th:if="${l.aceite=='S'}">Sim</span>
+          <span th:if="${l.aceite==null}"></span> </td>
+         <b> <td style ="color:Black;" th:text="${l.id}"></b>
         </tr>
        </table>   
-  
+   </div>
   </fieldset>
            <div th:each = "m : ${msg}" style="font-size: 18px; color: Red;">
              <b> <span th:text="${m}"></span></b>
            </div >
 
-
+  <form action="novasolicitacao">
+   <div style="margin-right: 12px; margin-left: 12px;" class="row">
+        <div align="right"  >
+		  <a class="waves-effect waves-light btn" type="button" th:href="@{/novasolicitacao}" style="color: Blue;">Nova Solicitação</a>
+		</div>
+		 <div align="left" >
+		  <a class="waves-effect waves-light btn" type="button" th:href="@{/inicio}">Sair</a>
+		</div>	
+  </div>				   
+  </form>
       
 <script >
 function mascara(o,f){
@@ -124,7 +154,7 @@ window.onload = function(){
 }
 </script>
 
-  <form action="salvarsolicitacao" class="col s11" method="post" th:if="${nome!=null&&nome!=''}">
+  <form action="salvarsolicitacao" class="col s11" method="post" th:if="${nome!=null&&nome!=''&&inserirsol==1}">
    <fieldset>
     <legend>Cadastro de solicitação</legend>
     <div class="row">
@@ -165,9 +195,7 @@ window.onload = function(){
 		 <b><input class="waves-effect waves-light btn" type="submit" value="Salvar"/></b>
 		 </div>	
 		<div class="input-field col s3">
-		 <div align="right" >
-		  <a class="waves-effect waves-light btn" type="button" th:href="@{/inicio}">Sair</a>
-		</div>
+
 		</div>	
         		
       </div>       		 		 	 	   
