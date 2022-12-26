@@ -44,7 +44,9 @@ background: #eee;
 form { font-size: 20px;
 
 }
-</style>      
+</style> 
+
+     
 
 <h3>Acesso a reservas</h3>
 
@@ -53,11 +55,16 @@ form { font-size: 20px;
 <title>Acesso solicitação de reserva de veículos</title>
 </head>
 <body bgcolor="ADD8E6">
+
+
      <div th:if = "${cormsg!=null}" th:each = "m : ${msg}" style="font-size: 18px; color: Red;">
              <b> <span th:text="${m}"></span></b>
      </div>
      <div th:if = "${cormsg==null}" th:each = "m : ${msg}" style="font-size: 18px; color: Blue;">
         <b> <span th:text="${m}"></span></b>
+     </div>
+     <div style="font-size: 18px; color: Blue;">
+       <b><span th:text="${complementamsg}"></span></b>
      </div>
   <fieldset th:if = "${cormsg!=null}">
    <legend>Insira o CPF</legend>

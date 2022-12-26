@@ -616,7 +616,10 @@ public class Api {
             		 DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             		 String nascimento = df.format(ue.getNascimento());
             		 if(emailr.equals(ue.getEmail())&&dtnascimentor.equals(nascimento)) {
-            			 mv.addObject("msg","Sua senha é:  "+ue.getSenha()); 
+            			 mensagem="Sua senha é:  "+ue.getSenha();
+            			 mv.addObject("msg", mensagem); 
+            			 mv.addObject("complementamsg", "Agora click em reiniciar e entre com seu cpf e senha");
+            			
             		 }else {
             			 mv.addObject("msg","Dados inseridos não conferem");
             		 }
